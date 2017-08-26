@@ -1,6 +1,5 @@
 
-//Copyright (c) 2015 Nicolás Narváez
-//(EL copyright es temporal)
+//MIT 2015 Nicolás Narváez
 
 //Un visualiador 3D de audio en html, multiexplorador, multidispositivo
 //soporta multiples servicios web, como soundcloud y youtube, basado en THREE y de facil extension.
