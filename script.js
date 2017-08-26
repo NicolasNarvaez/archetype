@@ -8,13 +8,11 @@
 //y todas ellas tienen acceso a un conjunto de informacion que proviene de un analizador
 //tambien se le pueden agregar mas filtros al analizador
 //esta diseñado para ser insertado como componente en otras paginas, o como aplicacion unica,
-//Nicolás Narváez
 
-//Licensia, repositorio con codigo:
+//Licensia, repositorio:
 //https://github.com/NicolasNarvaez/archetype
 
 /*
- //daa el flujo de ejecucion de JQuery 2.1.1 :s kasjdancsnksnvksdnckscjnsdkjncksdnsdkcnsdjn joderrr!!!
 (function() {
     if(typeof Object.prototype.uniqueid === 'undefined') {
         var id = 0;
