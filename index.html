@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Archetype 0</title>
+    <!-- Metadatos de OpenGraph -->
+    <meta property="og:title" content="Archetype, un visualizador de musica HTML5" />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Nicolas Narvaez" />
+	<meta property="og:url" content="http://archetype-0.cl/app" />
+	<meta property="og:image" content="http://nicolasnarvaez.cl/app/cover.jpg" />
+	<meta property="og:description" content="Un visualizador de audio HTML5, portable entre dispositivos que soporta multiples origenes: archivos, el microfono, o servicios web como soundcloud. Es extremadamente maleable y contiene una API de visualizaciones en construccion para representar cualquier abstraccion en corto tiempo." />
+	<link href='http://fonts.googleapis.com/css?family=Julius+Sans+One|Orbitron' rel='stylesheet' type='text/css'>
+	<!-- font-family: 'Orbitron', sans-serif; font-family: 'Julius Sans One', sans-serif;  -->
+	<link rel='stylesheet' type='text/css' href='style.css'>
+        
+	<script type='text/javascript' src='apis/jquery-2.1.1.min.js' ></script>
+	<script type='text/javascript' src='apis/gl-matrix-min.js' ></script>
+	<script type='text/javascript' src='apis/three.min.js' ></script>
+        <script type='text/javascript' src="http://connect.soundcloud.com/sdk.js"></script>
+        
+	<script src="//cdn.webglstats.com/stat.js" defer="defer" async="async"></script>
+	
+	<script id='shader-vs' type='x-shader/x-vertex'>
+		attribute vec3 aVertexPosition;
+		attribute vec2 aVertexTexCoord;
+		
+		uniform mat4 uMVMatrix;
+		uniform mat4 uPMatrix;
+
+		varying highp vec2 vTextureCoord;
+		
+		void main(void) {
+			gl_Position =  uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0 );
+			vTextureCoord = aVertexTexCoord;
+		}
+	</script>
+	<script id='shader-fs' type='x-shader/x-fragment'>
+		varying highp vec2 vTextureCoord;
+                
+		uniform sampler2D uSampler0;
+		uniform sampler2D uSampler1;
+		
+		uniform int uDoTexturing;
+		uniform int uDoLighting;
+		uniform mediump float uTime;
+                
+		void main(void) {
+                    highp float _unit = abs(mod(uTime/1000.0,2.0)-1.0);
+                    
+                    if(uDoTexturing == 1) {
+                        mediump vec4 sTex0 = texture2D(uSampler0, vec2(vTextureCoord.s, vTextureCoord.t));
+                        mediump vec4 sTex1 = texture2D(uSampler1, vec2(vTextureCoord.s, vTextureCoord.t));
+			gl_FragColor = sTex0*(sTex1.a) + sTex1*(1.0 - sTex0.a) ;
+                    }
+		
+                    else {
+                        
+                        highp float _ang = radians( uTime/1000.0 );
+                        
+                        highp vec2 _uv = vec2( vTextureCoord.s*tan(_ang)+vTextureCoord.t*sin(_ang) , vTextureCoord.t*cos(_ang)-vTextureCoord.s*sin(_ang) );
+                        
+                        const highp float _lineas = 15.0;
+                        const highp vec2 _segment = vec2(0.9, 0.9);
+                        bvec2 _isOut = greaterThan( fract(_uv*_lineas), _segment);
+                        
+                        highp vec4 _color;
+                        if( any(_isOut) ) {
+                            _color = vec4(0.0, _unit , 0.0, 1.0);   
+                        }
+                        else {
+                            _color = vec4( 1.0-_unit, 0.0 , 0.0, 1.0);   
+                        }
+                        gl_FragColor = _color;
+                    }
+                    
+		}
+	</script>
+	<script type='text/javascript' src='script.js' ></script>
+	<script type='text/javascript' >
+		
+		NZ.debugging = true;
+		if(navigator.userAgent.match(/FBAN/i) || navigator.userAgent.match(/FBAV/i) ){
+			alert('Estas usando el explorador de facebook, este no esta soportado.\nHas click en los tres puntos en la esquina superior derecha y luego en: "abrir con".\nRecomiendo opera o chrome');
+		}
+		else {
+			
+			window.addEventListener('load', function() {
+				window.NZVisualyser = new NZ.Arquetipo();
+				window.NZVisualyser.init( {ui_type : 'full', container:document.body} );
+			} );
+		}
+	</script>
+</head>
+
+<body>
+	
+</body>
+	
+</html>
